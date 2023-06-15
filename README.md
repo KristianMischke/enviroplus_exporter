@@ -13,3 +13,8 @@ git clone https://github.com/KristianMischke/enviroplus_exporter
 cd enviroplus_exporter
 sudo ./setup.sh
 ```
+
+
+# Grafana
+
+Install the corresponding dashboard https://grafana.com/grafana/dashboards/18987-enviropi-prometheus/ or enter ID `18987`
