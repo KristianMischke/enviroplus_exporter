@@ -75,7 +75,9 @@ message = ""
 top_pos = 25
 
 # Create a values dict to store the data
-variables = ["temperature",
+variables = [
+             "cpu_temperature",
+             "temperature",
              "pressure",
              "humidity",
              "light",
@@ -87,6 +89,7 @@ variables = ["temperature",
              "pm10"]
 
 units = ["C",
+         "C",
          "hPa",
          "%",
          "Lux",
@@ -112,7 +115,8 @@ gauges = [ Gauge(variables[i], units[i]) for i in range(len(variables)) ]
 # with NO WARRANTY. The authors of this example code claim
 # NO RESPONSIBILITY if reliance on the following values or this
 # code in general leads to ANY DAMAGES or DEATH.
-limits = [[4, 18, 28, 35],
+limits = [[0, 20, 60, 70],
+          [4, 18, 28, 35],
           [250, 650, 1013.25, 1015],
           [20, 30, 60, 70],
           [-1, -1, 30000, 100000],
@@ -194,22 +198,7 @@ def get_cpu_temperature():
     return float(output[output.index('=') + 1:output.rindex("'")])
 
 
-def get_cpu_adjusted_temperature(cpu_temps: list[float], factor: float):
-    cpu_temp = get_cpu_temperature()
-    # Smooth out with some averaging to decrease jitter
-    cpu_temps = cpu_temps[1:] + [cpu_temp]
-    avg_cpu_temp = sum(cpu_temps) / float(len(cpu_temps))
-    raw_temp = bme280.get_temperature()
-    data = raw_temp - ((avg_cpu_temp - raw_temp) / factor)
-    return data
-
 def main():
-    # Tuning factor for compensation. Decrease this number to adjust the
-    # temperature down, and increase to adjust up
-    factor = 2.25
-
-    cpu_temps = [get_cpu_temperature()] * 5
-
     delay = 0.5  # Debounce the proximity tap
     display_mode = 10    # The starting mode
     last_page = 0
@@ -222,7 +211,8 @@ def main():
         while True:
             # get all sensor readings
             proximity = ltr559.get_proximity()
-            temperature = get_cpu_adjusted_temperature(cpu_temps, factor)
+            cpu_temperature = get_cpu_temperature()
+            temperature = bme280.get_temperature()
             pressure = bme280.get_pressure()
             humidity = bme280.get_humidity()
 
@@ -249,6 +239,7 @@ def main():
                 pm10 = float(pms_readings.pm_ug_per_m3(10))
 
             data = [
+                cpu_temperature,
                 temperature,
                 pressure,
                 humidity,
