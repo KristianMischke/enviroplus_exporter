@@ -262,9 +262,9 @@ def main():
             for i in range(len(variables)):
                 save_data(i, data[i] if data[i] is not None else -1)
 
-            if display_mode < 10:  # Modes for displaying individual sensors
+            if display_mode < len(variables):  # Modes for displaying individual sensors
                 display_text(variables[display_mode], data[display_mode] or -1, units[display_mode])
-            if display_mode == 10:  # Composite display of all sensors
+            if display_mode == len(variables):  # Composite display of all sensors
                 display_everything()
 
     # Exit cleanly
