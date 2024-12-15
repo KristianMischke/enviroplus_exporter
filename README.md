@@ -7,6 +7,11 @@ cd enviroplus-python
 sudo ./install.sh
 ```
 
+reboot
+```shell
+sudo reboot
+```
+
 Then setup the prometheus exporter by:
 ```shell
 git clone https://github.com/KristianMischke/enviroplus_exporter
